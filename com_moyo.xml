@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0.0" method="upgrade" overwrite="true">
+    <name>Moyo</name>
+    <identifier>com:moyo</identifier>
+    <author>Dave Li</author>
+    <creationDate>January 2014</creationDate>
+    <copyright>Copyright (C) 2013 Moyo Web Architects and Contributors. (http://www.moyoweb.nl)</copyright>
+    <license>GNU GPLv3 - http://www.gnu.org/licenses/gpl.html</license>
+    <authorEmail>dave@moyoweb.nl</authorEmail>
+    <authorUrl>www.moyoweb.nl</authorUrl>
+    <version>1.0.0</version>
+    <description>Moyo</description>
+
+    <media folder="media">
+        <folder>com_moyo/css</folder>
+        <folder>com_moyo/images</folder>
+        <folder>com_moyo/js</folder>
+    </media>
+
+    <administration>
+        <files folder="administrator/components/com_moyo">
+            <folder>templates</folder>
+        </files>
+    </administration>
+</extension>

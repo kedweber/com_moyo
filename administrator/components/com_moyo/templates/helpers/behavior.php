@@ -60,22 +60,6 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
         return parent::validator($config);
     }
 
-    private function getRadioButtonGroupYesNo($config = array())
-    {
-        $config = new KConfig($config);
-        $config->append(array(
-            'options'   => array('yes', 'no'),
-            'value'     => 1
-        ));
-
-        return '<fieldset id="'.$config->id.'" class="radio btn-group btn-group-yesno">
-                    <input id="'.$config->id.'0" name="'.$config->name.'" value="1" '.($config->value == 1 ? 'checked="checked"' : '').' type="radio">
-                    <label class="btn '.($config->value == 1 ? 'active' : '').'" for="'.$config->id.'0">Yes</label>
-                    <input id="'.$config->id.'1" name="'.$config->name.'" value="0" '.($config->value == 0 ? 'checked="checked"' : '').' type="radio">
-                    <label class="btn '.($config->value == 0 ? 'active' : '').' btn-danger" for="'.$config->id.'1">No</label>
-               </fieldset>';
-    }
-
     /**
      * Renders an input html tag or returns the config if it is not an array
      *
@@ -148,7 +132,7 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
             'label' => array(
                 'text' => 'CREATED_BY'
             ),
-            'input' => $config->created_by, //TODO: username?
+            'input' => JFactory::getUser($config->created_by)->username,
             'controls' => array(
                 'style' => 'padding-top: 5px;'
             )
@@ -178,7 +162,7 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
             'label' => array(
                 'text' => 'MODIFIED_BY'
             ),
-            'input' => $config->modified_by, //TODO: username?
+            'input' => JFactory::getUser($config->created_by)->username,
             'controls' => array(
                 'style' => 'padding-top: 5px;'
             )

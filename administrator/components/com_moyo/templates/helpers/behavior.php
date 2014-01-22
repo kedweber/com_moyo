@@ -2,6 +2,14 @@
 
 class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
 {
+    public function __construct(KConfig $config)
+    {
+        parent::__construct($config);
+
+        // Load language file.
+        JFactory::getLanguage()->load('com_moyo', JPATH_ADMINISTRATOR . '/components/com_moyo', null, true);
+    }
+
     public function select2($config = array())
     {
         $config = new KConfig($config);

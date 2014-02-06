@@ -29,7 +29,7 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
 
         if (!isset(self::$_loaded['select2'])) {
 
-            $html .= '<script src="media://com_moyo/js/select2.js" />';
+            $html .= '<script src="media/com_moyo/js/select2.js"></script>';
 
             $html .= '<script>jQuery(function($){
                 $("'.$config->element.'").select2('.$config->options.');
@@ -45,7 +45,7 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
             }
 
 
-            $html .= '<style src="media://com_moyo/css/select2.css" />';
+            $html .= '<link rel="stylesheet" type="text/css" href="media/com_moyo/css/select2.css">';
 
             self::$_loaded['select2'] = true;
         }

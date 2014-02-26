@@ -19,7 +19,11 @@
 
     <administration>
         <files folder="administrator/components/com_moyo">
+            <folder>controllers</folder>
+            <folder>databases</folder>
+            <folder>language</folder>
             <folder>templates</folder>
+            <folder>views</folder>
         </files>
     </administration>
 </extension>

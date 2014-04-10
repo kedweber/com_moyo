@@ -14,6 +14,13 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	protected $_modules;
 
 	/**
+	 * To force the cache or not is the question.
+	 *
+	 * @var boolean
+	 */
+	protected $_force_cache;
+
+	/**
 	 * The cached state of the resource
 	 *
 	 * @var boolean
@@ -29,8 +36,9 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	{
 		parent::__construct($config);
 
-		// Set the view identifier
 		$this->_modules = KConfig::unbox($config->modules);
+
+		$this->_force_cache = $config->force_cache;
 	}
 
 	/**
@@ -44,7 +52,8 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	protected function _initialize(KConfig $config)
     {
         $config->append(array(
-            'modules'	=> array('toolbar', 'title', 'submenu', 'left')
+            'modules'		=> array('toolbar', 'title', 'submenu', 'left'),
+			'force_cache'	=> false
 	  	));
 
     	parent::_initialize($config);
@@ -60,20 +69,13 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	{
 	    $view   = $this->getView();
 	    $cache  = JFactory::getCache($this->_getGroup(), 'output');
+		$cache->setCaching($this->_force_cache);
         $key    = $this->_getKey();
 
         if($data = $cache->get($key))
         {
             $data = unserialize($data);
 
-            //Render the view output
-//            if($view instanceof KViewTemplate)
-//            {
-//                $context->result = $view->getTemplate()
-//                               ->loadString($data['component'], array())
-//                               ->render();
-//            }
-//            else
             $context->result = $data['component'];
 
             //Render the modules
@@ -103,6 +105,7 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	    {
 	        $view   = $this->getView();
 	        $cache  = JFactory::getCache($this->_getGroup(), 'output');
+			$cache->setCaching($this->_force_cache);
 	        $key    = $this->_getKey();
 
 	        $data  = array();
@@ -154,6 +157,7 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	    if(!empty($this->_output))
 	    {
 	        $context->result = $this->_output;
+
 	        return false;
 	    }
 	}
@@ -222,6 +226,7 @@ class ComMoyoControllerBehaviorCacheable extends KControllerBehaviorAbstract
 	    $state = $this->getModel()->getState()->toArray();
 
 	    $key = $view->getLayout().'-'.$view->getFormat().':'.md5(http_build_query($state));
+
         return $key;
 	}
 

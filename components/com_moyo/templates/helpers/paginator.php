@@ -13,6 +13,14 @@ defined('KOOWA') or die('Protected resource');
 
 class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 {
+
+    public function __construct(KConfig $config)
+    {
+        parent::__construct($config);
+
+        JFactory::getLanguage()->load('com_moyo', JPATH_SITE . '/components/com_moyo', null, true);
+    }
+
     /**
      * Render item pagination
      *
@@ -35,54 +43,47 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
         ));
 
         $html = '';
+        $jsContainer = str_replace('-', '_', $config->container);
 
         if($config->ajax) {
-            $html = '<script src="templates/web2fordev/js/bootstrap-paginator.js" />';
+            $html = '<script src="media://com_moyo/js/bootstrap-paginator.js" />';
             $html .= '<script>
-                        jQuery.noConflict()(function($) {
-                            var options = {
-                                currentPage: 1,
-                                totalPages: '. round($config->total / $config->limit) .',
-                                onPageClicked: function(e, originalEvent, type, page){
-                                    var height = $("#'. $config->container.'").height();
-                                    $("#'. $config->container.'").html('. '\'<div class="loading" style="height: \' + height + \'px;"></div>' . '\');
-                                    $.ajax({
-                                        url: "'. $config->url. '&limit='.$config->limit.'&offset=" + (page * '.$config->limit.' - '.$config->limit.')
-                                    }).success(function(data) {
-                                        $("#'. $config->container.'").html(data);
-                                    });
-                                },
-                                itemTexts: function (type, page, current) {
-                                    switch (type) {
-                                        case "first":
-                                            return "First";
-                                        case "prev":
-                                            return "Previous";
-                                        case "next":
-                                            return "Next";
-                                        case "last":
-                                            return "Last";
-                                        case "page":
-                                            return page;
-                                    }
+                        function setPaginator'.$jsContainer.'() {
+
+                            jQuery.noConflict()(function($) {
+                                var options = {
+                                    totalPages: '. ceil($config->total / $config->limit) .',
+                                    onPageClicked: function(e, originalEvent, type, page){
+                                        var height = '. ($config->height ? $config->height : '$("#'. $config->container.'").height();').'
+                                        $("#'. $config->container.'").html('. '\'<div class="loading" style="height: \' + height + \'px;"></div>' . '\');
+                                        $.ajax({
+                                            url: "'. $config->url. '&limit='.$config->limit.'&offset=" + (page * '.$config->limit.' - '.$config->limit.')
+                                        }).success(function(data) {
+                                            $("#'. $config->container.'").html(data);
+                                        });
+                                    },
+                                    itemTexts: function (type, page, current) {
+                                        switch (type) {
+                                            case "first":
+                                                return window.innerWidth > 768 ? "'. $this->translate('FIRST') .'" : "<<";
+                                            case "prev":
+                                                return window.innerWidth > 768 ? "'. $this->translate('PREV') .'" : "<";
+                                            case "next":
+                                                return window.innerWidth > 768 ? "'. $this->translate('NEXT') .'" : ">";
+                                            case "last":
+                                                return window.innerWidth > 768 ? "'. $this->translate('LAST') .'" : ">>";
+                                            case "page":
+                                                return page;
+                                        }
+                                    },
+                                    pageUrl: "#'. ($config->pageUrl ? $config->pageUrl : $config->container) .'"
                                 }
-                            }
 
-//                            $("a.ajaxify").on("click", function(e) {
-//                                e.preventDefault();
-//
-//                                var url     = $(this).attr("href") + "&format=raw&layout=default_items";
-//                                var target  = $(this).attr("data-target");
-//
-//                                $.ajax({
-//                                    url: url
-//                                }).success(function(data) {
-//                                    $(target).html(data);
-//                                });
-//                            });
-
-                            $("#pagination").bootstrapPaginator(options);
-                        });
+                                $("#pagination-'. $config->container .'").bootstrapPaginator(options);
+                            });
+                        }
+                        setPaginator'.$jsContainer.'();
+                        window.addEventListener("resize", setPaginator'.$jsContainer.');
                     </script>';
         }
 
@@ -97,7 +98,7 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
                 $html .= '<div class="count pull-right"> '.$this->translate('Page').' '.$config->current.' '.$this->translate('of').' '.$config->count.'</div>';
             }
         } else {
-            $html.= '<div id="pagination"></div>';
+            $html.= '<div id="pagination-'. $config->container .'"></div>';
         }
 
         return $html;

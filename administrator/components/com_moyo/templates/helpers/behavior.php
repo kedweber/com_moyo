@@ -29,9 +29,9 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
 
         if (!isset(self::$_loaded['select2'])) {
 
-            $html .= '<script src="media://com_moyo/js/select2.js"></script>';
+            $html .= '<script src="media://com_moyo/js/select2.js" />';
 
-            $html .= '<script>jQuery(function($){
+            $html .= '<script type="text/javascript">jQuery(function($){
                 $("'.$config->element.'").select2('.$config->options.');
             });</script>';
 

@@ -55,12 +55,14 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
                                 var options = {
                                     totalPages: '. ceil($config->total / $config->limit) .',
                                     onPageClicked: function(e, originalEvent, type, page){
+                                        e.preventDefault();
+                                        originalEvent.preventDefault();
+
                                         var height = '. ($config->height ? $config->height : '$("#'. $config->container.'").height();').'
                                         $("#'. $config->container.'").html('. '\'<div class="loading" style="height: \' + height + \'px;"></div>' . '\');
                                         $.ajax({
                                             url: "'. $config->url. '&limit='.$config->limit.'&'. $config->offsetWord .'=" + (page * '.$config->limit.' - '.$config->limit.')
                                         }).success(function(data) {
-                                            alert(data);
                                             $("#'. $config->container.'").html(data);
                                         });
                                     },
@@ -205,6 +207,10 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
     protected function _bootstrap_link($page, $title, $attribs = array())
     {
         $url   = clone KRequest::url();
+        echo '<pre>';
+        	print_r($url);
+        echo '</pre>';
+        die();
         $query = $url->getQuery(true);
 
         //For compatibility with Joomla use limitstart instead of offset

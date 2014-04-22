@@ -38,6 +38,7 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
             'url'        => '',
             'container'  => 'container',
             'offset'     => 0,
+            'offsetWord' => 'offset',
             'limit'      => 0,
             'show_count' => true
         ));
@@ -57,8 +58,9 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
                                         var height = '. ($config->height ? $config->height : '$("#'. $config->container.'").height();').'
                                         $("#'. $config->container.'").html('. '\'<div class="loading" style="height: \' + height + \'px;"></div>' . '\');
                                         $.ajax({
-                                            url: "'. $config->url. '&limit='.$config->limit.'&offset=" + (page * '.$config->limit.' - '.$config->limit.')
+                                            url: "'. $config->url. '&limit='.$config->limit.'&'. $config->offsetWord .'=" + (page * '.$config->limit.' - '.$config->limit.')
                                         }).success(function(data) {
+                                            alert(data);
                                             $("#'. $config->container.'").html(data);
                                         });
                                     },
@@ -147,10 +149,6 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 
         $url->setQuery($query);
 
-        print_r(KConfig::unbox($attribs));
-
-        exit;
-
         $class = $page->current ? 'class="active"' : '';
 
         if($page->active && !$page->current) {
@@ -197,7 +195,6 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 
             $html .= '</li>';
         }
-        die('etst');
 
         $html  .= $pages['next'] ? '<li class="next">'.$this->_bootstrap_link($pages['next'], $this->translate('Next'), array('class' => array('next'))).'</li>' : '';
         $html  .= $pages['last'] ? '<li class="last">'.$this->_bootstrap_link($pages['last'], $this->translate('Last')).'</li>' : '';
@@ -216,9 +213,8 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 
         $url->setQuery($query);
 
-        print_r(KConfig::unbox($attribs));
 
-        $html = '<a class="" href="'.$url.'"  data-query="'.http_build_query(array('limit' => $page->limit, 'offset' => $page->offset)).'">'.$this->translate($title).'</a>';
+        $html = '<a class="" href="'.$url.'"  data-query="'.http_build_query(array('limit' => $page->limit, $page->offsetWord => $page->offset)).'">'.$this->translate($title).'</a>';
 
         return $html;
     }

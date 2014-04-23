@@ -207,10 +207,6 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
     protected function _bootstrap_link($page, $title, $attribs = array())
     {
         $url   = clone KRequest::url();
-        echo '<pre>';
-        	print_r($url);
-        echo '</pre>';
-        die();
         $query = $url->getQuery(true);
 
         //For compatibility with Joomla use limitstart instead of offset

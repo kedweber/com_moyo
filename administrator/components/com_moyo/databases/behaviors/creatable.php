@@ -18,8 +18,8 @@ class ComMoyoDatabaseBehaviorCreatable extends KDatabaseBehaviorCreatable
         $query = $context->query;
 
         if($query) {
-            $query->select('users.name AS created_by_name');
-            $query->join('left', '#__users AS users', 'tbl.created_by = users.id');
+            $query->select('created.name AS created_by_name');
+            $query->join('left', '#__users AS created', 'tbl.created_by = created.id');
         }
     }
 }

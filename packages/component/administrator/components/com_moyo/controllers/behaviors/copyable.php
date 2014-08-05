@@ -138,7 +138,7 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
     
     protected function _checkName(&$item, $setCount = true)
     {
-        preg_match('/.*(\((.*)\)).*/', $item->title, $matches);
+        preg_match('/.*(\((.*)\))/', $item->title, $matches);
         if($matches[2]) {
             if($setCount) {
                 $this->count = $matches[2];

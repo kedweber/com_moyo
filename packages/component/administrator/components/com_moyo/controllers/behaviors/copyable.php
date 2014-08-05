@@ -60,6 +60,9 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
                 $data = $original->getData();
                 unset($data['id']);
                 unset($data['taxonomy_taxonomy_id']);
+                if(isset($data['featured'])) {
+                    unset($data['featured']);
+                }
 
                 $row->setData($data);
                 $row->title = $title;
@@ -117,6 +120,9 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
             $data = $article->getData();
             unset($data['id']);
             unset($data['taxonomy_taxonomy_id']);
+            if(isset($data['featured'])) {
+                unset($data['featured']);
+            }
 
             $this->_checkName($article, false);
 
@@ -139,6 +145,7 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
     protected function _checkName(&$item, $setCount = true)
     {
         preg_match('/.*(\((.*)\))/', $item->title, $matches);
+        
         if($matches[2]) {
             if($setCount) {
                 $this->count = $matches[2];

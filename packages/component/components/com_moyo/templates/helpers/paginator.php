@@ -40,13 +40,63 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
             'offset'     => 0,
             'offsetWord' => 'offset',
             'limit'      => 0,
-            'show_count' => true
+            'show_count' => true,
+            'yepnope'    => false
         ));
 
         $html = '';
         $jsContainer = str_replace('-', '_', $config->container);
 
-        if($config->ajax) {
+        if ($config->ajax && $config->yepnope) {
+            $html = '<script>
+            			yepnope({
+							load: ["../media/com_moyo/js/bootstrap-paginator.js"],
+							complete: function() {
+                        function setPaginator'.$jsContainer.'() {
+
+                            jQuery.noConflict()(function($) {
+                                var options = {
+                                    totalPages: '. ceil($config->total / $config->limit) .',
+                                    onPageClicked: function(e, originalEvent, type, page){
+                                        e.preventDefault();
+                                        originalEvent.preventDefault();
+
+                                        var height = '. ($config->height ? $config->height : '$("#'. $config->container.'").height();').'
+                                        $("#'. $config->container.'").html('. '\'<div class="loading" style="height: \' + height + \'px;"></div>' . '\');
+                                        $.ajax({
+                                            url: "'. $config->url. '&limit='.$config->limit.'&'. $config->offsetWord .'=" + (page * '.$config->limit.' - '.$config->limit.')
+                                        }).success(function(data) {
+                                            $("#'. $config->container.'").html(data);
+                                        });
+                                    },
+                                    itemTexts: function (type, page, current) {
+                                        switch (type) {
+                                            case "first":
+                                                return window.innerWidth > 768 ? "'. $this->translate('FIRST') .'" : "<<";
+                                            case "prev":
+                                                return window.innerWidth > 768 ? "'. $this->translate('PREV') .'" : "<";
+                                            case "next":
+                                                return window.innerWidth > 768 ? "'. $this->translate('NEXT') .'" : ">";
+                                            case "last":
+                                                return window.innerWidth > 768 ? "'. $this->translate('LAST') .'" : ">>";
+                                            case "page":
+                                                return page;
+                                        }
+                                    },
+                                    pageUrl: "#'. ($config->pageUrl ? $config->pageUrl : $config->container) .'"
+                                }
+
+                                $("#pagination-'. $config->container .'").bootstrapPaginator(options);
+                            });
+                        }
+                        setPaginator'.$jsContainer.'();
+                        window.addEventListener("resize", setPaginator'.$jsContainer.');
+                        							}
+						});
+
+                    </script>';
+        }
+        elseif($config->ajax) {
             $html = '<script src="media://com_moyo/js/bootstrap-paginator.js" />';
             $html .= '<script>
                         function setPaginator'.$jsContainer.'() {

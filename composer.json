@@ -1,9 +1,9 @@
 {
-    "name": "moyo/default",
+    "name": "cta/default",
     "type": "joomlatools-installer",
     "description": "Router Package",
     "keywords": ["joomla", "moyo"],
-    "homepage": "https://moyoweb.assembla.com/code/moyo-content/git-11/nodes",
+    "homepage": "https://github.com/cta-int/moyo",
     "authors": [
         {
             "name": "Dave Li",

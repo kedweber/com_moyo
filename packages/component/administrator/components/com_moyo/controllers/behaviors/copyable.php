@@ -7,48 +7,55 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
      */
     public function _actionCopy(KCommandContext $context)
     {
-        /**
-         * Hmm, this doesn't work.
-         * We need to keep a place where the original data is stored, also the translatable behavior needs to return which one is original.
-         * This is needed because the original one has to be saved and all the others need an update.
-         *
-         * So first we will get all the articles for every language and save them in one variable.
-         */
-        foreach(KRequest::get('get.id', 'raw') as $articleId)
+        foreach(KRequest::get('get.id', 'raw') as $item_id)
         {
             $this->count = 1;
-            $articles = array();
+            $items = array();
             $languages = JLanguageHelper::getLanguages();
 
-            foreach($languages as $language) {
-                JFactory::getLanguage()->setLanguage($language->lang_code);
-                $article = $this->getService('com://admin/articles.model.articles')->id($articleId)->getItem();
+            $model_identifier = clone $context->caller->getIdentifier();
+            $model_identifier->path = array('model');
+            $model_identifier->name = KInflector::pluralize($model_identifier->name);
 
-                if($article->original)
-                {
-                    $this->original_language = $language->lang_code;
-                    $original = $article;
-                }
-                else
-                {
-                    $articles[$language->lang_code] = $article;
+            $isTranslatable = KService::get($model_identifier)->getTable()->hasBehavior('translatable');
+
+            if($isTranslatable) {
+                foreach($languages as $language) {
+                    JFactory::getLanguage()->setLanguage($language->lang_code);
+                    $item = $this->getService($model_identifier)->id($item_id)->getItem();
+
+                    if($item->original)
+                    {
+                        $this->original_language = $language->lang_code;
+                        $original = $item;
+                    }
+                    else
+                    {
+                        $items[$language->lang_code] = $item;
+                    }
                 }
             }
 
             JFactory::getLanguage()->setLanguage($this->original_language);
             $id = $this->_copyOriginal($original);
-            $this->_updateLanguages($id, $articles);
+
+            if($isTranslatable) {
+                $this->_updateLanguages($id, $items);
+            }
         }
     }
 
     public function _copyOriginal($original)
     {
         while(true) {
-            $row = $this->getService('com://admin/articles.database.row.article');
-            
+            $row_identifier = clone $original->getIdentifier();
+            $row_identifier->path = array('database', 'row');
+
+            $row = $this->getService($row_identifier);
+
             // We will first check the name of the article/ item.
             $this->_checkName($original);
-            
+
             $title = $original->title . ' (' . $this->count . ')';
             $slug = $original->slug . '-' . $this->count;
 
@@ -59,7 +66,6 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
             {
                 $data = $original->getData();
                 unset($data['id']);
-                unset($data['taxonomy_taxonomy_id']);
                 if(isset($data['featured'])) {
                     unset($data['featured']);
                 }
@@ -71,35 +77,9 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
                 $row->translated = 0;
 
                 // Bind all the taxonomies.
-                if($original->isRelationable())
-                {
-                    foreach($original->getRelations()->ancestors as $key => $ancestor) {
-                        $ancestor_part = $original->getAncestors(array(
-                            'filter' => array(
-                                'type' => KInflector::singularize($key)
-                            )
-                        ))->getColumn('taxonomy_taxonomy_id');
-
-                        if(count($ancestor_part) > 0) {
-                            $row->setData(array(
-                                $key => KInflector::isSingular($key) ? end($ancestor_part) : array_keys($ancestor_part)
-                            ));
-                        }
-                    }
-
-                    foreach($original->getRelations()->descendants as $key => $ancestor) {
-                        $ancestor_part = $original->getDescendants(array(
-                            'filter' => array(
-                                'type' => KInflector::singularize($key)
-                            )
-                        ))->getColumn('taxonomy_taxonomy_id');
-
-                        if(count($ancestor_part) > 0) {
-                            $row->setData(array(
-                                $key => KInflector::isSingular($key) ? end($ancestor_part) : array_keys($ancestor_part)
-                            ));
-                        }
-                    }
+                if($original->isRelationable()) {
+                    $row->setData(json_decode($original->ancestors));
+                    $row->setData(json_decode($original->descendants));
                 }
 
                 $row->save();
@@ -112,25 +92,28 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
         }
     }
 
-    public function _updateLanguages($id, $articles)
+    public function _updateLanguages($id, $items)
     {
-        foreach($articles as $language => $article)
+        foreach($items as $language => $item)
         {
+            $model_identifier = clone $item->getIdentifier();
+            $model_identifier->path = array('model');
+            $model_identifier->name = KInflector::pluralize($model_identifier->name);
+
             // Original Data
-            $data = $article->getData();
+            $data = $item->getData();
             unset($data['id']);
-            unset($data['taxonomy_taxonomy_id']);
             if(isset($data['featured'])) {
                 unset($data['featured']);
             }
 
-            $this->_checkName($article, false);
+            $this->_checkName($item, false);
 
-            $title = $article->title . ' (' . $this->count . ')';
-            $slug = $article->slug . '-' . $this->count;
+            $title = $item->title . ' (' . $this->count . ')';
+            $slug = $item->slug . '-' . $this->count;
 
             JFactory::getLanguage()->setLanguage($language);
-            $row = $this->getService('com://admin/articles.model.articles')->id($id)->getItem();
+            $row = $this->getService($model_identifier)->id($id)->getItem();
 
             $row->setData($data);
             $row->title = $title;
@@ -138,21 +121,26 @@ class ComMoyoControllerBehaviorCopyable extends KControllerBehaviorAbstract
             $row->slug = $slug;
             $row->translated = 0;
 
+            if($row->isRelationable()) {
+                $row->setData(json_decode($row->ancestors));
+                $row->setData(json_decode($row->descendants));
+            }
+
             $row->save();
         }
     }
-    
+
     protected function _checkName(&$item, $setCount = true)
     {
         preg_match('/.*(\((.*)\))/', $item->title, $matches);
-        
+
         if($matches[2]) {
             if($setCount) {
                 $this->count = $matches[2];
                 $this->count++;
             }
             $item->title = trim(str_replace($matches[1], '', $item->title));
-            
+
             if($item->slug) {
                 $item->slug = str_replace('-' . $matches[2], '', $item->slug);
             }

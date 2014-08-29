@@ -28,9 +28,6 @@
     </administration>
 
     <files folder="components/com_moyo">
-        <folder>controllers</folder>
-        <folder>databases</folder>
-        <folder>language</folder>
         <folder>templates</folder>
     </files>
 </extension>

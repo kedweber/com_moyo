@@ -51,7 +51,7 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
         if ($config->ajax && $config->yepnope) {
             $html = '<script>
             			yepnope({
-							load: ["../media/com_moyo/js/bootstrap-paginator.js"],
+							load: ["' . KRequest::root() . '/media/com_moyo/js/bootstrap-paginator.js"],
 							complete: function() {
                         function setPaginator'.$jsContainer.'() {
 

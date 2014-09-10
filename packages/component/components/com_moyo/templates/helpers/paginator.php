@@ -13,6 +13,7 @@ defined('KOOWA') or die('Protected resource');
 
 class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 {
+    private $_config;
 
     public function __construct(KConfig $config)
     {
@@ -143,6 +144,7 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 
         if(!$config->ajax) {
             $this->_initialize($config);
+            $this->_config = $config;
 
             $html .= '<ul class="pagination">';
             $html .=  $this->_bootstrap_pages($this->_items($config));
@@ -214,8 +216,14 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
 
     protected function _bootstrap_pages($pages)
     {
-        $html  = $pages['first'] ? '<li class="first">'.$this->_bootstrap_link($pages['first'], $this->translate('First'), array('class' => array('prev'))).'</li>' : '';
-        $html .= $pages['previous'] ? '<li class="previous">'.$this->_bootstrap_link($pages['previous'], $this->translate('Previous')).'</li>' : '';
+        // TODO: This needs some extra checks.
+        // If the current page is 1 then
+        $html = '';
+
+        if($this->_config->offset > 0) {
+            $html .= $pages['first'] ? '<li class="first">'.$this->_bootstrap_link($pages['first'], $this->translate('First'), array('class' => array('prev'))).'</li>' : '';
+            $html .= $pages['previous'] ? '<li class="previous">'.$this->_bootstrap_link($pages['previous'], $this->translate('Previous')).'</li>' : '';
+        }
 
         /* @TODO should be a better way to do this than iterating the array to find the current page */
         $current = 0;
@@ -248,8 +256,10 @@ class ComMoyoTemplateHelperPaginator extends KTemplateHelperPaginator
             $html .= '</li>';
         }
 
-        $html  .= $pages['next'] ? '<li class="next">'.$this->_bootstrap_link($pages['next'], $this->translate('Next'), array('class' => array('next'))).'</li>' : '';
-        $html  .= $pages['last'] ? '<li class="last">'.$this->_bootstrap_link($pages['last'], $this->translate('Last')).'</li>' : '';
+        if(($this->_config->offset + $this->_config->limit) < $this->_config->total) {
+            $html  .= $pages['next'] ? '<li class="next">'.$this->_bootstrap_link($pages['next'], $this->translate('Next'), array('class' => array('next'))).'</li>' : '';
+            $html  .= $pages['last'] ? '<li class="last">'.$this->_bootstrap_link($pages['last'], $this->translate('Last')).'</li>' : '';
+        }
 
         return $html;
     }

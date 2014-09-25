@@ -80,8 +80,6 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
 
         $url_replace = array($this, '_linkify_filter_callback');
         return preg_replace_callback($url_pattern, $url_replace, $config->text);
-
-        return $config->text;
     }
 
     private function _linkify_filter_callback($m)

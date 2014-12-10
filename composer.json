@@ -2,7 +2,7 @@
     "name": "cta/default",
     "type": "joomlatools-installer",
     "description": "Moyo Package",
-    "keywords": ["joomla", "moyo"],
+    "keywords": ["joomla", "nooku", "moyo"],
     "homepage": "https://github.com/cta-int/moyo",
     "authors": [
         {

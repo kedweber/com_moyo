@@ -1,0 +1,1 @@
+# com_moyo CHANGELOG### 1.1.3 - 24 september 2014* Added defaultable behavior.

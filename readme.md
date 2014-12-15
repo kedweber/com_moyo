@@ -27,6 +27,10 @@ Retrieved the creator of a certain element (e.g. Article).
 Makes sure that slugs are created on the `_beforeTableInsert` . The default behavior for Koowa is `_afterTableInsert`,
 which sometimes creates errors on duplicate slugs.
 
+#### Defaultable
+
+Toggles default status for the defaultable element.
+
 ## Helpers
 
 ### Behavior

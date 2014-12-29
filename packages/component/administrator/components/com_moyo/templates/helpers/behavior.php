@@ -176,4 +176,23 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
             )
         ));
     }
+
+    public function sluggable($config = array())
+    {
+        $config = new KConfig($config);
+        $config->append(array(
+            'name' => 'title',
+            'target' => 'slug'
+        ));
+
+        $html = '<script type="text/javascript">';
+        $html .= 'jQuery(function($) {';
+        $html .= '  $(\'input[name=' . $config->name . ']\').keydown(function() {';
+        $html .= '      $(\'input[name=' . $config->target . ']\').val("");';
+        $html .= '  });';
+        $html .= '});';
+        $html .= '</script>';
+
+        return $html;
+    }
 }

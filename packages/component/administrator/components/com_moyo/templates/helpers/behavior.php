@@ -185,13 +185,17 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
             'target' => 'slug'
         ));
 
-        $html = '<script type="text/javascript">';
-        $html .= 'jQuery(function($) {';
-        $html .= '  $(\'input[name=' . $config->name . ']\').keydown(function() {';
-        $html .= '      $(\'input[name=' . $config->target . ']\').val("");';
-        $html .= '  });';
-        $html .= '});';
-        $html .= '</script>';
+        $html = '';
+
+        if(!$config->enabled) {
+            $html .= '<script type="text/javascript">';
+            $html .= 'jQuery(function($) {';
+            $html .= '  $(\'input[name=' . $config->name . ']\').keydown(function() {';
+            $html .= '      $(\'input[name=' . $config->target . ']\').val("");';
+            $html .= '  });';
+            $html .= '});';
+            $html .= '</script>';
+        }
 
         return $html;
     }

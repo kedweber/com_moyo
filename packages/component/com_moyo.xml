@@ -2,13 +2,13 @@
 <extension type="component" version="3.0.0" method="upgrade" overwrite="true">
     <name>Moyo</name>
     <identifier>com:moyo</identifier>
-    <author>Dave Li</author>
+    <author>Moyo Web Architects</author>
     <creationDate>January 2014</creationDate>
     <copyright>Copyright (C) 2013 Moyo Web Architects and Contributors. (http://www.moyoweb.nl)</copyright>
     <license>GNU GPLv3 - http://www.gnu.org/licenses/gpl.html</license>
     <authorEmail>dave@moyoweb.nl</authorEmail>
     <authorUrl>www.moyoweb.nl</authorUrl>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <description>Moyo</description>
 
     <media folder="media">

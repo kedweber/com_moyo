@@ -187,15 +187,15 @@ class ComMoyoTemplateHelperBehavior extends ComExtmanTemplateHelperBehavior
 
         $html = '';
 
-        if(!$config->enabled) {
-            $html .= '<script type="text/javascript">';
-            $html .= 'jQuery(function($) {';
-            $html .= '  $(\'input[name=' . $config->name . ']\').keydown(function() {';
-            $html .= '      $(\'input[name=' . $config->target . ']\').val("");';
-            $html .= '  });';
-            $html .= '});';
-            $html .= '</script>';
-        }
+        $html .= '<script type="text/javascript">';
+        $html .= 'jQuery(function($) {';
+        $html .= '  $(\'input[name=' . $config->name . ']\').keydown(function() {';
+        $html .= '      if($(\'input[name=enabled]:checked\').val() == 0) {';
+        $html .= '          $(\'input[name=' . $config->target . ']\').val("");';
+        $html .= '      }';
+        $html .= '  });';
+        $html .= '});';
+        $html .= '</script>';
 
         return $html;
     }

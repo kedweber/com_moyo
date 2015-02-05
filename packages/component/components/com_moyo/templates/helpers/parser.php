@@ -87,4 +87,31 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
 
         return $pre .'<a href="'. $url .'">' . $url .'</a>' .$post;
     }
+
+    public function timetoread($config) {
+        $config = new KConfig($config);
+
+        // We do need to specify which columns have the text in them, this is different for each cck element.
+        // Also we may not forget the translations.
+        $config->append(array(
+            'average_words' => 200,
+            'row' => null,
+            'columns' => array(
+                'title'
+            )
+        ));
+
+        $words = 0;
+
+        foreach($config->columns as $column) {
+            if($config->row->{$column}) {
+                $words += str_word_count(strip_tags($config->row->{$column}));
+            }
+        }
+
+        $minutes = floor($words / $config->average_words);
+        $seconds = floor($words % $config->average_words / ($config->average_words / 60));
+
+        return '';
+    }
 }

@@ -91,8 +91,7 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
     public function timetoread($config) {
         $config = new KConfig($config);
 
-        // We do need to specify which columns have the text in them, this is different for each cck element.
-        // Also we may not forget the translations.
+        JFactory::getLanguage()->load('com_moyo', JPATH_BASE . '/components/com_moyo');
         $config->append(array(
             'average_words' => 200,
             'row' => null,
@@ -112,6 +111,9 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
         $minutes = floor($words / $config->average_words);
         $seconds = floor($words % $config->average_words / ($config->average_words / 60));
 
-        return '';
+        $text = str_replace('{{minutes}}', $minutes, JText::plural('MINUTES', $minutes));
+        $text .= ($minutes > 0 ? ' ' . JText::_('AND') . ' ' : '') . str_replace('{{seconds}}', $seconds, JText::plural('SECONDS', $seconds));
+
+        return $text;
     }
 }

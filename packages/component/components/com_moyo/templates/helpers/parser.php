@@ -114,6 +114,6 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
         $text = str_replace('{{minutes}}', $minutes, JText::plural('MINUTES', $minutes));
         $text .= ($minutes > 0 ? ' ' . JText::_('AND') . ' ' : '') . str_replace('{{seconds}}', $seconds, JText::plural('SECONDS', $seconds));
 
-        return $text;
+        return JText::_('ESTIMATED_TIME') . ': ' . $text;
     }
 }

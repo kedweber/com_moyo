@@ -87,4 +87,35 @@ class ComMoyoTemplateHelperParser extends KTemplateHelperAbstract
 
         return $pre .'<a href="'. $url .'">' . $url .'</a>' .$post;
     }
+
+    public function timetoread($config) {
+        $config = new KConfig($config);
+
+        JFactory::getLanguage()->load('com_moyo', JPATH_BASE . '/components/com_moyo');
+        $config->append(array(
+            'average_words' => 200,
+            'row' => null,
+            'columns' => array(
+                'title'
+            )
+        ));
+
+        $words = 0;
+
+        foreach($config->columns as $column) {
+            if($config->row->{$column}) {
+                $words += str_word_count(strip_tags($config->row->{$column}));
+            }
+        }
+
+        $minutes = floor($words / $config->average_words);
+        $seconds = floor($words % $config->average_words / ($config->average_words / 60));
+
+        if(($minutes > 0 && $seconds > 29) || ($minutes == 0)) {
+            $minutes++;
+        };
+
+        $text = str_replace('{{minutes}}', $minutes, JText::plural('MINUTES', $minutes));
+        return JText::_('ESTIMATED_TIME') . ': ' . $text;
+    }
 }

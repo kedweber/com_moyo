@@ -2,9 +2,9 @@
 <extension type="package" version="1.6">
     <name>Moyo</name>
     <author>Moyo Web Architects</author>
-    <creationDate>Juli 2014</creationDate>
+    <creationDate>July 2014</creationDate>
     <packagename>moyo</packagename>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <url>http://www.moyoweb.nl/</url>
     <packager>Jasper van Rijbroek</packager>
     <packagerurl>http://www.moyoweb.nl/</packagerurl>

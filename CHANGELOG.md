@@ -1,5 +1,9 @@
 # com_moyo CHANGELOG
 
+### 1.2.3 - 16 april 2015
+
+* Added support for component-based ACL
+
 ### 1.2.2 - 17 february 2015
 
 * Added some translations

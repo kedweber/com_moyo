@@ -1,5 +1,5 @@
 {
-    "name": "moyo/default",
+    "name": "moyo/com_default",
     "type": "joomlatools-installer",
     "description": "Moyo Package",
     "keywords": ["joomla", "nooku", "moyo"],
